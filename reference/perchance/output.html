@@ -1,0 +1,806 @@
+<div id="ageGate" style="position:fixed; inset:0; z-index:9999; display:flex; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:1em; box-sizing:border-box; background:#14060d;">
+  <div id="ageGateCard" style="margin:auto; max-width:520px; width:100%; flex-shrink:0; background:#1f0d16; border:2px solid #ff2d78; border-radius:16px; padding:1.6em 1.5em; text-align:center; color:#fff; box-shadow:0 12px 60px rgba(255,45,120,0.35); box-sizing:border-box;">
+    <div style="font-size:2.2em;">🔞</div>
+    <h2 style="margin:0.3em 0 0.4em 0; font-size:1.5em;">Adults only — explicit content ahead</h2>
+    <p style="margin:0 0 0.8em 0; line-height:1.55; opacity:0.92;">This site <b>TalkDirty2Me</b> writes <b>suggestive to sexually explicit bedroom roleplay</b> — double entendre, innuendo, lewd comments and erotic flattery, up to live in-the-moment ERP.</p>
+    <p style="margin:0 0 1em 0; line-height:1.55; opacity:0.92;">It is intended <b>only for consenting adults aged 18 or older</b>. Everything here is consensual adult fantasy. Nothing on this site is suitable for minors.</p>
+    <label style="display:flex; gap:0.6em; align-items:flex-start; text-align:left; font-size:0.95em; line-height:1.5; background:rgba(255,45,120,0.10); border:1px solid rgba(255,45,120,0.35); border-radius:10px; padding:0.7em 0.8em; cursor:pointer; margin-bottom:0.9em;">
+      <input id="ageConfirmInput" type="checkbox" style="width:1.3em; height:1.3em; margin-top:0.15em; accent-color:#ff2d78; flex-shrink:0;">
+      <span><b>I am 18 years or older</b> and I want to enter and see explicit content.</span>
+    </label>
+    <label style="display:flex; gap:0.5em; align-items:center; justify-content:center; font-size:0.9em; opacity:0.8; margin-bottom:1em; cursor:pointer;">
+      <input id="ageRememberInput" type="checkbox" checked style="accent-color:#ff2d78;"> Remember me on this device
+    </label>
+    <div style="display:flex; gap:0.6em; justify-content:center; flex-wrap:wrap;">
+      <button id="ageEnterBtn" type="button" onclick="confirmAge()" disabled style="background:#ff2d78; border:1px solid #ff2d78; color:#fff; font-weight:700; opacity:0.5;">Enter 🔥</button>
+      <button id="ageLeaveBtn" type="button" onclick="declineAge()" style="background:transparent; border:1px solid #888; color:#fff;">Leave</button>
+    </div>
+    <div id="ageGateErr" style="margin-top:0.7em; min-height:1.2em; font-size:0.9em; color:#ff8fb5;"></div>
+  </div>
+</div>
+
+<div id="siteContent" hidden>
+<h1>🔥 [title]</h1>
+<p style="margin:0 auto 1em auto; padding:0 1em; max-width:640px; opacity:0.85;">AI-powered dirty-mouthed messages — double entendre, innuendo &amp; erotic flattery, written <b>to you</b>. Pick a spice level, pick a voice, get 1–4 sentences. Level 5 plays it <b>in the moment</b>, like live ERP.</p>
+
+<div id="controlsCard" style="margin:0 auto; padding:1.2em; max-width:560px; border:1px solid #8884; border-radius:12px; text-align:left;">
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7em;">
+    <label>Your gender<br>
+      <select id="userGenderSelect" style="width:100%; padding:0.5em; font-size:1em; border-radius:6px;">
+        <option value="woman">woman</option>
+        <option value="man">man</option>
+        <option value="nonbinary person">nonbinary</option>
+        <option value="trans woman">trans woman</option>
+        <option value="trans man">trans man</option>
+        <option value="genderfluid person">genderfluid</option>
+        <option value="agender person">agender</option>
+      </select>
+    </label>
+    <label>Dirty-talker voice<br>
+      <select id="genGenderSelect" style="width:100%; padding:0.5em; font-size:1em; border-radius:6px;" title="Gender persona of the generator — who is talking dirty to you?">
+        <option value="a sultry woman">💋 sultry woman</option>
+        <option value="a smooth-talking man">😏 smooth-talking man</option>
+        <option value="a dominant woman (femdomme)">⛓️ dominant woman</option>
+        <option value="a dominant man">⛓️ dominant man</option>
+        <option value="a sweet submissive woman">🌹 sweet submissive woman</option>
+        <option value="an eager submissive man">🌹 eager submissive man</option>
+        <option value="a nonbinary tease">✨ nonbinary tease</option>
+      </select>
+    </label>
+  </div>
+
+  <div style="margin-top:0.9em;">
+    <label for="spiceRange" style="display:flex; justify-content:space-between; align-items:baseline; gap:1em;">
+      <span>Decency level</span>
+      <b id="spiceNameEl" style="color:#ff2d78;">💋 Flirty Innuendo (2/5)</b>
+    </label>
+    <input id="spiceRange" type="range" min="1" max="5" step="1" value="2" style="width:100%; accent-color:#ff2d78;">
+    <div style="display:flex; justify-content:space-between; font-size:0.72em; opacity:0.7; margin-top:0.15em; gap:0.3em;">
+      <span>1 · Suggestive</span><span>2 · Flirty</span><span>3 · Spicy</span><span>4 · X-Rated</span><span>5 · ERP live</span>
+    </div>
+    <div id="spiceDescEl" style="margin-top:0.4em; font-size:0.9em; opacity:0.85; font-style:italic;">Cheeky and clearly flirting — heavy innuendo, light on explicit detail.</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7em; margin-top:0.9em;">
+    <label>Length<br>
+      <select id="lenSelect" style="width:100%; padding:0.5em; font-size:1em; border-radius:6px;">
+        <option value="1">1 sentence</option>
+        <option value="2" selected>2 sentences</option>
+        <option value="3">3 sentences</option>
+        <option value="4">4 sentences</option>
+        <option value="random">🎲 random</option>
+      </select>
+    </label>
+    <label>Vibe<br>
+      <select id="vibeSelect" style="width:100%; padding:0.5em; font-size:1em; border-radius:6px;">
+        <option value="cheeky and playful">cheeky &amp; playful</option>
+        <option value="sweet and flattering">sweet &amp; flattering</option>
+        <option value="bold and confident">bold &amp; confident</option>
+        <option value="dominant and commanding">dominant &amp; commanding</option>
+        <option value="submissive and worshipful">submissive &amp; worshipful</option>
+        <option value="romantic and seductive">romantic &amp; seductive</option>
+        <option value="filthy and unrestrained">filthy &amp; unrestrained</option>
+        <option value="random">🎲 random</option>
+      </select>
+    </label>
+  </div>
+
+  <div style="margin-top:0.7em;">
+    <label>Extra flavor <span style="opacity:0.6;">(optional)</span><br>
+      <input id="extraInput" placeholder="e.g. good-morning text, after a long day, mention my tattoos…" style="width:100%; padding:0.5em; box-sizing:border-box;">
+    </label>
+  </div>
+
+  <details id="providerBox" style="margin-top:0.9em; border:1px solid #8884; border-radius:8px; padding:0.6em 0.8em;">
+    <summary style="cursor:pointer; font-size:0.95em;">🔌 AI provider: <b id="providerNameEl">Perchance (built-in)</b> <span style="opacity:0.6;">— use your own key for spicier models</span></summary>
+    <div style="margin-top:0.7em; display:grid; gap:0.6em;">
+      <label>Provider<br>
+        <select id="providerSelect" style="width:100%; padding:0.5em; font-size:1em; border-radius:6px;">
+          <option value="perchance">Perchance (built-in, free)</option>
+          <option value="openai">OpenAI-compatible server</option>
+          <option value="openrouter">OpenRouter</option>
+        </select>
+      </label>
+      <div id="extSettings" hidden style="display:grid; gap:0.6em;">
+        <label id="baseWrap">Server URL<br>
+          <input id="baseInput" placeholder="https://api.openai.com/v1" style="width:100%; padding:0.5em; box-sizing:border-box;" autocomplete="off" spellcheck="false">
+        </label>
+        <label>API key <span style="opacity:0.6;">(stays in this browser only)</span><br>
+          <span style="display:flex; gap:0.4em;">
+            <input id="apiKeyInput" type="password" placeholder="sk-…" style="flex:1; padding:0.5em; box-sizing:border-box; min-width:0;" autocomplete="off" spellcheck="false">
+            <button id="keyShowBtn" type="button" onclick="toggleKeyVis()" title="show/hide key" style="flex-shrink:0;">👁</button>
+          </span>
+        </label>
+        <label>Model<br>
+          <span style="display:flex; gap:0.4em;">
+            <input id="modelInput" list="modelSuggestions" placeholder="e.g. gpt-4o-mini" style="flex:1; padding:0.5em; box-sizing:border-box; min-width:0;" autocomplete="off" spellcheck="false">
+            <button id="refreshModelsBtn" type="button" onclick="refreshModels()" title="Fetch live model list from the provider" style="flex-shrink:0;">↻</button>
+          </span>
+          <datalist id="modelSuggestions"></datalist>
+          <select id="modelPickSelect" style="width:100%; padding:0.5em; font-size:1em; border-radius:6px; margin-top:0.35em;"></select>
+          <div style="display:flex; gap:0.6em; align-items:center; flex-wrap:wrap; margin-top:0.3em; font-size:0.85em;">
+            <label id="favOnlyWrap" style="display:flex; gap:0.3em; align-items:center; cursor:pointer;"><input id="favOnlyCheck" type="checkbox" checked style="accent-color:#ff2d78;"> ★ favorites only</label>
+            <button id="favToggleBtn" type="button" onclick="toggleFav()" title="Star/unstar the model in the box above">☆ favorite</button>
+          </div>
+          <div id="modelListStatus" style="font-size:0.8em; opacity:0.65; margin-top:0.2em;"></div>
+        </label>
+        <div style="display:flex; gap:0.5em; flex-wrap:wrap; align-items:center;">
+          <button id="testConnBtn" type="button" onclick="testConnection()">test connection</button>
+          <button id="forgetKeyBtn" type="button" onclick="forgetKey()">forget key</button>
+          <span id="connStatusEl" style="font-size:0.88em; opacity:0.8;"></span>
+        </div>
+        <div style="font-size:0.8em; opacity:0.65; line-height:1.45;">Your key is stored only in this browser (localStorage, this generator's own origin) and sent only to the server URL above — never committed anywhere. OpenRouter keys: <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a> · models: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">openrouter.ai/models</a>. Content filtering, if any, is applied by your chosen provider. Note: strict CSP (e.g. opening the page with ?$csp) blocks non-Perchance servers — reload without it if requests fail.</div>
+      </div>
+    </div>
+  </details>
+
+  <div style="margin-top:1em; display:flex; gap:0.5em; flex-wrap:wrap; justify-content:center;">
+    <button id="generateBtn" onclick="generateMessage()">🔥 Talk dirty to me</button>
+    <button id="stopBtn" onclick="stopGen()" hidden>stop</button>
+    <button id="surpriseBtn" onclick="surpriseMe()">🎲 surprise me</button>
+  </div>
+</div>
+
+<div id="statusEl" style="margin:0.8em auto 0 auto; max-width:640px; min-height:1.4em; opacity:0.75; font-size:0.95em;"></div>
+<p id="msgEl" style="margin:0.6em auto; padding:1em 1.1em; max-width:640px; min-height:3em; font-size:1.2em; line-height:1.6; border-radius:10px; background:rgba(255,45,120,0.10); border:1px solid rgba(255,45,120,0.25); white-space:pre-wrap; text-align:left;"></p>
+<div style="margin:0 auto; max-width:640px; display:flex; gap:0.5em; justify-content:center; flex-wrap:wrap;">
+  <button id="copyBtn" onclick="copyMsg()" hidden>copy message</button>
+  <button id="againBtn" onclick="generateMessage()" hidden>↻ more like this</button>
+</div>
+<p style="margin:1.2em auto 0 auto; max-width:640px; font-size:0.8em; opacity:0.55;">🔞 Adults only. Everything here is consensual fantasy between adults — be kind, get consent, and keep it private. <button type="button" onclick="leaveSite()" style="font-size:0.95em; padding:0.2em 0.6em; margin-left:0.5em;">leave / lock</button></p>
+</div>
+
+<style>
+  html { color-scheme: light dark; }
+  body { text-align:center; font-family: system-ui, sans-serif; }
+  body.gate-locked { overflow:hidden; }
+  #ageGate { touch-action:pan-y; }
+  @media (max-width:480px), (max-height:640px) {
+    #ageGate { padding:0.7em; }
+    #ageGateCard { padding:1.1em 1em !important; border-radius:12px !important; }
+    #ageGateCard h2 { font-size:1.25em !important; }
+    #ageGateCard p { font-size:0.95em !important; }
+  }
+  input, select { font-size:1em; border-radius:6px; border:1px solid #8888; }
+  button { font-size:1em; padding:0.5em 1em; border-radius:8px; cursor:pointer; }
+  button:disabled { opacity:0.5; cursor:not-allowed; }
+  #generateBtn { background:#ff2d78; border:1px solid #ff2d78; color:#fff; font-weight:700; }
+  #generateBtn:disabled { background:#888; border-color:#888; }
+  #ageEnterBtn:disabled { opacity:0.5; cursor:not-allowed; }
+  .dots::after { content:""; animation: dots 1s steps(4) infinite; }
+  @keyframes dots { 0% { content:""; } 25% { content:"."; } 50% { content:".."; } 75% { content:"..."; } }
+  .cursor::after { content:"▌"; animation: blink 0.8s steps(1) infinite; opacity:0.6; }
+  @keyframes blink { 50% { opacity:0; } }
+</style>
+
+<script>
+let currentGen = null;
+let generating = false;
+let ageVerified = false;
+
+const SPICE = {
+  1: { name: "😇 Slightly Suggestive (1/5)", desc: "Playful wink only — teasing double meanings, nothing graphic. Flirty but deniable." },
+  2: { name: "💋 Flirty Innuendo (2/5)", desc: "Cheeky and clearly flirting — heavy innuendo, light on explicit detail." },
+  3: { name: "🥵 Spicy & Lewd (3/5)", desc: "Bold erotic flattery — hungry, hands-on language and explicit suggestion." },
+  4: { name: "⛔ X-Rated Bedroom (4/5)", desc: "Raw consensual bedroom dirty-talk — graphic, filthy, no euphemisms." },
+  5: { name: "🔥 ERP In-The-Moment (5/5)", desc: "Live roleplay, first person + present tense — what I'm touching, seeing, tasting right now, and what you're doing to me." },
+};
+
+const AGE_LS_KEY = "td2m.ageok";
+
+function isUnlocked() { return ageVerified; }
+
+function refreshSpice() {
+  const sp = SPICE[spiceRange.value];
+  spiceNameEl.textContent = sp.name;
+  spiceDescEl.textContent = sp.desc;
+}
+
+// ----- Age gate: nothing behind it is visible until confirmed -----
+function lockSite() {
+  ageVerified = false;
+  siteContent.hidden = true;
+  ageGate.hidden = false;
+  ageGate.style.display = "flex";
+  document.body.classList.add("gate-locked");
+  ageConfirmInput.checked = false;
+  ageEnterBtn.disabled = true;
+  ageEnterBtn.style.opacity = "0.5";
+  ageGateErr.textContent = "";
+}
+
+function unlockSite(remember) {
+  ageVerified = true;
+  try {
+    if (remember) localStorage.setItem(AGE_LS_KEY, "1");
+    else localStorage.removeItem(AGE_LS_KEY);
+  } catch(e) {}
+  ageGate.hidden = true;
+  ageGate.style.display = "none";
+  siteContent.hidden = false;
+  document.body.classList.remove("gate-locked");
+  generateBtn.disabled = false;
+  surpriseBtn.disabled = false;
+}
+
+function confirmAge() {
+  if (!ageConfirmInput.checked) {
+    ageGateErr.textContent = "Please tick the 18+ box first.";
+    return;
+  }
+  unlockSite(ageRememberInput.checked);
+}
+
+function declineAge() {
+  ageGateCard.innerHTML = '<div style="font-size:2em;">🔞</div>'
+    + '<h2 style="margin:0.3em 0 0.4em 0;">No worries — come back later</h2>'
+    + '<p style="line-height:1.55; opacity:0.9;">This site is only for adults aged 18+. The content stays hidden until you confirm your age.</p>'
+    + '<a href="https://perchance.org/" style="display:inline-block; margin-top:0.6em; padding:0.6em 1.2em; border-radius:8px; background:#ff2d78; color:#fff; text-decoration:none; font-weight:700;">Take me back to Perchance</a>';
+}
+
+function leaveSite() {
+  // Re-lock: hide everything again and clear message
+  try { localStorage.removeItem(AGE_LS_KEY); } catch(e) {}
+  try { if (currentGen && currentGen.stop) currentGen.stop(); } catch(e) {}
+  if (typeof extAbort !== "undefined" && extAbort) { try { extAbort.abort(); } catch(e) {} }
+  msgEl.textContent = "";
+  copyBtn.hidden = true;
+  againBtn.hidden = true;
+  statusEl.textContent = "";
+  // Rebuild gate card in case it was replaced by declineAge()
+  location.reload();
+}
+
+spiceRange.addEventListener("input", refreshSpice);
+ageConfirmInput.addEventListener("change", () => {
+  const on = ageConfirmInput.checked;
+  ageEnterBtn.disabled = !on;
+  ageEnterBtn.style.opacity = on ? "1" : "0.5";
+  if (on) ageGateErr.textContent = "";
+});
+refreshSpice();
+
+// Gate check runs before anything else is shown
+(function initGate() {
+  let remembered = false;
+  try { remembered = localStorage.getItem(AGE_LS_KEY) === "1"; } catch(e) {}
+  if (remembered) {
+    ageVerified = true;
+    ageGate.hidden = true;
+    ageGate.style.display = "none";
+    siteContent.hidden = false;
+    document.body.classList.remove("gate-locked");
+  } else {
+    lockSite();
+  }
+})();
+
+// ---------- External AI provider (BYOK: OpenAI-compatible / OpenRouter) ----------
+// Browser equivalent of OPENROUTER_API_KEY env var: the API-key field below,
+// stored only in localStorage (never committed, never sent anywhere except the
+// configured base URL). OpenRouter base: https://openrouter.ai/api/v1.
+// Quickstart: https://openrouter.ai/docs/quickstart — models: https://openrouter.ai/models
+// Keys: https://openrouter.ai/keys. Uses OpenAI-compatible POST {base}/chat/completions.
+let extAbort = null;
+const LS_KEYS = { provider: "td2m.provider", base: "td2m.base", key: "td2m.key", model: "td2m.model" };
+function lsGet(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch(e) { return d; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) {} }
+function lsDel(k) { try { localStorage.removeItem(k); } catch(e) {} }
+
+const OPENAI_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1"];
+// Curated OpenRouter favorites — the only models shown when "★ favorites only" is on.
+const RECOMMENDED_MODEL = "~anthropic/claude-fable-latest";
+const OPENROUTER_MODELS = ["z-ai/glm-4.7-flash", "~z-ai/glm-flash-latest", "z-ai/glm-5.3-flash", "x-ai/grok-4.20", "~anthropic/claude-fable-latest", "~anthropic/claude-sonnet-latest", "~anthropic/claude-opus-latest", "anthropic/claude-sonnet-5.5", "anthropic/claude-opus-5.5", "deepseek/deepseek-v4.1-flash-1017", "thedrummer/cydonia-24b-v4.1", "thedrummer/valkyrie-49b-v1", "thedrummer/skyfall-36b-v2", "thedrummer/unslopnemo-12b", "thedrummer/rocinante-12b", "cognitivecomputations/dolphin-mistral-24b-venice-edition"];
+const LS_FAVS = "td2m.orFavs.v1"; // user-starred model ids (added to the curated list)
+const LS_HIDDEN = "td2m.orHidden.v1"; // curated ids the user un-starred
+const LS_MODELS_CACHE = "td2m.modelsCache.v1"; // { openrouter?: {at, models[]}, openai?: {...} } — ids only, no key
+function getLsArray(k) {
+  try { const v = JSON.parse(localStorage.getItem(k) || "[]"); return Array.isArray(v) ? v : []; }
+  catch(e) { return []; }
+}
+function curatedModels() {
+  const hidden = new Set(getLsArray(LS_HIDDEN));
+  const seen = new Set();
+  const out = [];
+  for (const m of [...OPENROUTER_MODELS, ...getLsArray(LS_FAVS)]) {
+    if (hidden.has(m) || seen.has(m)) continue;
+    seen.add(m);
+    out.push(m);
+  }
+  return out;
+}
+function isFav(m) { return curatedModels().includes(m); }
+function favOnlyOn() { return favOnlyCheck.checked; }
+function getCachedModels(id) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LS_MODELS_CACHE) || "{}");
+    const e = all[id];
+    if (e && Array.isArray(e.models) && e.models.length) return e.models;
+  } catch(e) {}
+  return null;
+}
+function setModelSuggestions(models, source) {
+  const cur = modelInput.value.trim();
+  modelSuggestions.innerHTML = models.map(m => `<option value="${m}">`).join("");
+  modelPickSelect.innerHTML = `<option value="">— pick a model (${models.length}) —</option>`
+    + models.map(m => {
+      const label = m === RECOMMENDED_MODEL ? `${m} (recommended)` : m;
+      const style = m === RECOMMENDED_MODEL ? ` style="font-weight:bold;"` : "";
+      return `<option value="${m}"${m === cur ? " selected" : ""}${style}>${label}</option>`;
+    }).join("");
+  const favN = curatedModels().length;
+  modelListStatus.textContent = source === "live"
+    ? `${models.length} models, live from provider — pick from the dropdown or type to filter.`
+    : favOnlyOn() && providerSelect.value === "openrouter"
+      ? `${favN} ★ favorites — type to filter, ↻ fetches the full live list, uncheck the box to browse it.`
+      : `${models.length} suggestions — type to filter, or press ↻ for the live list.`;
+  refreshFavUI();
+}
+
+function authHeaders(id, key) {
+  const h = { "Authorization": `Bearer ${key}` };
+  if (id === "openrouter") { h["HTTP-Referer"] = `https://perchance.org/${window.generatorName || ""}`; h["X-Title"] = "TalkDirty2Me"; h["X-OpenRouter-Title"] = "TalkDirty2Me"; }
+  return h;
+}
+
+// Star/unstar the model currently in the box, and favorites-only rendering.
+function refreshFavUI() {
+  const cur = modelInput.value.trim();
+  const fav = cur && isFav(cur);
+  favToggleBtn.textContent = fav ? "★ favorited" : "☆ favorite";
+  favOnlyWrap.style.display = providerSelect.value === "openrouter" ? "" : "none";
+  favToggleBtn.style.display = providerSelect.value === "openrouter" ? "" : "none";
+}
+function renderModelList() {
+  const id = providerSelect.value || "perchance";
+  if (id === "openrouter" && favOnlyOn()) {
+    const favs = curatedModels();
+    setModelSuggestions(favs, "favs");
+  } else {
+    const live = getCachedModels(id);
+    const sug = live || (id === "openrouter" ? OPENROUTER_MODELS : OPENAI_MODELS);
+    setModelSuggestions(sug, live ? "live" : "static");
+  }
+}
+function toggleFav() {
+  const cur = modelInput.value.trim();
+  if (!cur) { modelListStatus.textContent = "Type a model slug first, then press ☆ favorite."; return; }
+  let favs = getLsArray(LS_FAVS);
+  let hidden = getLsArray(LS_HIDDEN);
+  if (isFav(cur)) {
+    // Unstar: drop from user favs; if it's a built-in, hide it too.
+    favs = favs.filter(m => m !== cur);
+    if (OPENROUTER_MODELS.includes(cur) && !hidden.includes(cur)) hidden.push(cur);
+    try { localStorage.setItem(LS_FAVS, JSON.stringify(favs)); localStorage.setItem(LS_HIDDEN, JSON.stringify(hidden)); } catch(e) {}
+  } else {
+    // Star: unhide + add to user favs (no-op if already a visible built-in).
+    hidden = hidden.filter(m => m !== cur);
+    if (!OPENROUTER_MODELS.includes(cur) && !favs.includes(cur)) favs.push(cur);
+    try { localStorage.setItem(LS_FAVS, JSON.stringify(favs)); localStorage.setItem(LS_HIDDEN, JSON.stringify(hidden)); } catch(e) {}
+    modelInput.value = cur;
+    saveProvider();
+  }
+  renderModelList();
+}
+
+function providerConfig() {
+  const id = providerSelect.value || "perchance";
+  let base = baseInput.value.trim().replace(/\/+$/, "");
+  if (id === "openrouter" && !base) base = "https://openrouter.ai/api/v1";
+  if (id === "openai" && !base) base = "https://api.openai.com/v1";
+  return { id, base, key: apiKeyInput.value.trim(), model: modelInput.value.trim() };
+}
+
+function refreshProviderUI() {
+  const id = providerSelect.value || "perchance";
+  const ext = id !== "perchance";
+  extSettings.hidden = !ext;
+  providerNameEl.textContent = id === "openai" ? "OpenAI-compatible" : id === "openrouter" ? "OpenRouter" : "Perchance (built-in)";
+  baseWrap.style.display = id === "openrouter" ? "none" : "";
+  try { favOnlyCheck.checked = localStorage.getItem("td2m.favOnly") !== "0"; } catch(e) { favOnlyCheck.checked = true; }
+  renderModelList();
+  modelInput.placeholder = id === "openrouter" ? "e.g. anthropic/claude-opus-5.5" : "e.g. gpt-4o-mini";
+}
+
+function saveProvider() {
+  lsSet(LS_KEYS.provider, providerSelect.value);
+  lsSet(LS_KEYS.base, baseInput.value.trim());
+  if (apiKeyInput.value) lsSet(LS_KEYS.key, apiKeyInput.value);
+  lsSet(LS_KEYS.model, modelInput.value.trim());
+}
+function loadProvider() {
+  providerSelect.value = lsGet(LS_KEYS.provider, "perchance");
+  baseInput.value = lsGet(LS_KEYS.base, "");
+  apiKeyInput.value = lsGet(LS_KEYS.key, "");
+  modelInput.value = lsGet(LS_KEYS.model, "");
+  refreshProviderUI();
+}
+providerSelect.addEventListener("change", () => { saveProvider(); refreshProviderUI(); connStatusEl.textContent = ""; });
+baseInput.addEventListener("input", saveProvider);
+apiKeyInput.addEventListener("input", saveProvider);
+modelInput.addEventListener("input", () => {
+  saveProvider();
+  const cur = modelInput.value.trim();
+  if ([...modelPickSelect.options].some(o => o.value === cur)) modelPickSelect.value = cur;
+  else modelPickSelect.value = "";
+  refreshFavUI();
+});
+modelPickSelect.addEventListener("change", () => {
+  if (modelPickSelect.value) { modelInput.value = modelPickSelect.value; saveProvider(); refreshFavUI(); }
+});
+favOnlyCheck.addEventListener("change", () => {
+  try { localStorage.setItem("td2m.favOnly", favOnlyCheck.checked ? "1" : "0"); } catch(e) {}
+  renderModelList();
+});
+loadProvider();
+
+async function refreshModels() {
+  const { id, base, key } = providerConfig();
+  const btn = refreshModelsBtn;
+  btn.disabled = true;
+  modelListStatus.textContent = "Fetching live model list…";
+  try {
+    // OpenRouter's /models is public; most OpenAI-compatible servers need the key.
+    const headers = key ? authHeaders(id, key) : {};
+    if (id === "openrouter" && !key) {
+      // Public endpoint — still send attribution so it shows up correctly.
+      headers["HTTP-Referer"] = `https://perchance.org/${window.generatorName || ""}`;
+      headers["X-Title"] = "TalkDirty2Me";
+      headers["X-OpenRouter-Title"] = "TalkDirty2Me";
+    }
+    const resp = await fetch(`${base}/models`, { headers });
+    if (resp.status === 401) throw new Error("invalid key (401) — check the key at https://openrouter.ai/keys");
+    if (resp.status === 404) throw new Error("no /models endpoint here (404) — type the model id manually");
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} — ${String(await resp.text()).slice(0, 120)}`);
+    const j = await resp.json();
+    if (!Array.isArray(j.data)) throw new Error("unexpected /models response — type the model id manually");
+    let models;
+    if (id === "openrouter") {
+      // Text models only: keep chat-capable models, drop batch/embeddings-style variants.
+      models = j.data
+        .filter(m => {
+          const out = m?.architecture?.output_modalities;
+          if (Array.isArray(out)) return out.includes("text");
+          const eps = m?.endpoints;
+          if (Array.isArray(eps)) return eps.includes("/chat/completions") || eps.includes("/responses");
+          return true;
+        })
+        .map(m => m.id || m.name).filter(Boolean);
+    } else {
+      models = j.data.map(m => m.id || m.name).filter(Boolean);
+    }
+    // Drop batch variants + de-dupe, keep stable order.
+    models = [...new Set(models.filter(m => !/:batch$/.test(m)))].sort();
+    if (!models.length) throw new Error("provider returned an empty model list");
+    try {
+      const all = JSON.parse(localStorage.getItem(LS_MODELS_CACHE) || "{}");
+      all[id] = { at: Date.now(), models };
+      localStorage.setItem(LS_MODELS_CACHE, JSON.stringify(all));
+    } catch(e) {}
+    renderModelList();
+    const shown = modelPickSelect.options.length - 1;
+    connStatusEl.textContent = id === "openrouter" && favOnlyOn()
+      ? `✅ ${models.length} text models cached — showing your ${shown} ★ favorites.`
+      : `✅ ${models.length} models loaded — pick one from the dropdown.`;
+  } catch (err) {
+    modelListStatus.textContent = `❌ ${err.message || err}`;
+  }
+  btn.disabled = false;
+}
+
+function toggleKeyVis() {
+  apiKeyInput.type = apiKeyInput.type === "password" ? "text" : "password";
+}
+function forgetKey() {
+  apiKeyInput.value = "";
+  lsDel(LS_KEYS.key);
+  connStatusEl.textContent = "Key forgotten (this browser).";
+}
+
+async function testConnection() {
+  const { id, base, key, model } = providerConfig();
+  connStatusEl.textContent = "Testing…";
+  testConnBtn.disabled = true;
+  try {
+    if (!key) throw new Error("enter an API key first — create one at https://openrouter.ai/keys");
+    // Per OpenRouter quickstart: attribution headers are optional but recommended.
+    // Base URL is https://openrouter.ai/api/v1 (OpenAI-compatible /chat/completions).
+    const headers = authHeaders(id, key);
+    const resp = await fetch(`${base}/models`, { headers });
+    if (resp.status === 401) throw new Error("invalid key (401) — check the key");
+    if (resp.status === 404) throw new Error("no /models endpoint here (404) — check the server URL, or just try generating anyway");
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} — ${String(await resp.text()).slice(0, 120)}`);
+    let count = "";
+    try { const j = await resp.json(); if (Array.isArray(j.data)) count = ` — ${j.data.length} models available`; } catch(e) {}
+    connStatusEl.textContent = `✅ Connected to ${base}${count}.`;
+    if (model) connStatusEl.textContent += " (Model choice is only validated when you generate.)";
+  } catch (err) {
+    connStatusEl.textContent = `❌ ${err.message || err}`;
+  }
+  testConnBtn.disabled = false;
+}
+
+function parseSSEChunk(buffer) {
+  // returns { events: string[], rest: string }
+  const parts = buffer.split("\n");
+  const rest = parts.pop();
+  return { events: parts, rest };
+}
+
+async function streamChatCompletion({ base, key, model, instruction, signal, onText, isOpenRouter }) {
+  const url = `${base}/chat/completions`;
+  const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${key}` };
+  // OpenRouter quickstart headers (optional, for rankings): HTTP-Referer + X-Title.
+  if (isOpenRouter) { headers["HTTP-Referer"] = `https://perchance.org/${window.generatorName || ""}`; headers["X-Title"] = "TalkDirty2Me"; headers["X-OpenRouter-Title"] = "TalkDirty2Me"; }
+  const payload = (stream) => {
+    // Jittered sampling + random seed: same prompt never decodes the same way twice.
+    const p = { model, messages: [{ role: "user", content: instruction }],
+      temperature: 0.85 + Math.random() * 0.35,
+      top_p: 0.9 + Math.random() * 0.1,
+      presence_penalty: 0.3 + Math.random() * 0.5,
+      frequency_penalty: 0.2 + Math.random() * 0.3,
+      seed: Math.floor(Math.random() * 2147483647),
+      max_tokens: 600, stream };
+    // Keep reasoning short so models don't burn the reply budget thinking.
+    if (isOpenRouter) p.reasoning = { effort: "low" };
+    return p;
+  };
+  let resp = await fetch(url, { method: "POST", headers, signal, body: JSON.stringify(payload(true)) });
+  if (!resp.ok) {
+    let detail = "";
+    try { const j = await resp.clone().json(); detail = j?.error?.message || JSON.stringify(j).slice(0, 200); }
+    catch(e) { try { detail = String(await resp.text()).slice(0, 200); } catch(e2) {} }
+    if (resp.status === 401) throw new Error("invalid API key (401)");
+    if (resp.status === 402) throw new Error("payment required (402) — out of credits on your provider account");
+    if (resp.status === 404) throw new Error(`model not found (404) — "${model}" doesn't exist on this server`);
+    if (resp.status === 429) throw new Error("rate limited (429) — wait a bit and try again");
+    // Some servers don't support streaming — retry non-streaming once
+    if (resp.status === 400 && /stream/i.test(detail)) {
+      resp = await fetch(url, { method: "POST", headers, signal, body: JSON.stringify(payload(false)) });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status} — ${detail || "request failed"}`);
+      const j = await resp.json();
+      const text = j?.choices?.[0]?.message?.content || "";
+      if (!text.trim()) throw new Error("empty response from model");
+      onText(text);
+      return text;
+    }
+    throw new Error(`HTTP ${resp.status} — ${detail || "request failed"}`);
+  }
+  if (!resp.body) throw new Error("this browser returned no stream body — try a different browser");
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "", full = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const { events, rest } = parseSSEChunk(buf);
+    buf = rest;
+    for (const line of events) {
+      const t = line.trim();
+      if (!t.startsWith("data:")) continue;
+      const data = t.slice(5).trim();
+      if (data === "[DONE]") break;
+      try {
+        const j = JSON.parse(data);
+        const piece = j?.choices?.[0]?.delta?.content || "";
+        if (piece) { full += piece; onText(full); }
+      } catch(e) { /* partial JSON — ignore, more bytes coming */ }
+    }
+  }
+  if (!full.trim()) throw new Error("empty response from model");
+  return full;
+}
+
+function cleanExtra(s) {
+  s = (s || "").trim().replace(/\s+/g, " ");
+  return s.slice(0, 140);
+}
+
+// Freshness kit: a rotating creative twist + jittered sampling params + random
+// seed, so back-to-back taps don't read like copy-paste. Fixed prompt stays
+// first (prefix-cache friendly); everything varying goes at the end.
+const VARIETY_TWISTS = [
+  "Open mid-thought, as if you couldn't hold it in any longer.",
+  "Build the whole message around ONE sense (touch, taste, scent, sound, or sight) — go deep on it.",
+  "Start with a playful dare or challenge, then melt into flattery.",
+  "Contrast their effect on you with everything else — tease by comparison.",
+  "Mix short gasping clauses with one long rolling sentence.",
+  "Lean on food-and-drink language: taste, hunger, savoring.",
+  "Lean on heat-and-weather language: warmth, shivers, fever, electricity.",
+  "End on a lingering promise of what happens next.",
+  "Ask a rhetorical question mid-message, then answer it yourself.",
+  "Fixate on one imagined detail (their hands, mouth, voice, the way they look at you) and obsess over it.",
+  "Alternate worship and mischief: one beat sweet, the next wicked.",
+  "Whisper it like a secret — conspiratorial, close, meant only for them.",
+  "Make it urgent and right-now: you can't wait, it's happening.",
+  "Echo one charged word or phrase for rhythm (never repeat a whole sentence).",
+];
+let lastTwistIdx = -1;
+function pickTwist() {
+  let i = Math.floor(Math.random() * VARIETY_TWISTS.length);
+  if (VARIETY_TWISTS.length > 1 && i === lastTwistIdx) i = (i + 1 + Math.floor(Math.random() * (VARIETY_TWISTS.length - 1))) % VARIETY_TWISTS.length;
+  lastTwistIdx = i;
+  return VARIETY_TWISTS[i];
+}
+
+// Fixed prefix first (cache-friendly), varying task at the end.
+function buildInstruction() {
+  const userGender = userGenderSelect.value;
+  const voice = genGenderSelect.value;
+  const spice = Number(spiceRange.value);
+  const len = lenSelect.value === "random" ? 1 + Math.floor(Math.random() * 4) : Number(lenSelect.value);
+  let vibe = vibeSelect.value;
+  if (vibe === "random") {
+    const opts = [...vibeSelect.options].map(o => o.value).filter(v => v && v !== "random");
+    vibe = opts[Math.floor(Math.random() * opts.length)];
+  }
+  const extra = cleanExtra(extraInput.value);
+
+  const sentenceWord = len === 1 ? "EXACTLY 1 sentence" : `EXACTLY ${len} sentences`;
+  const extraLine = extra ? `Extra flavor from the reader (weave it in naturally): "${extra}"\n` : "";
+  // Rotating creative twist, always last: the fixed prompt above stays
+  // cache-friendly while this line makes every tap structurally different.
+  // Never repeats twice in a row.
+  const twistLine = `Variety twist (obey it while keeping every rule above): ${pickTwist()}\n`;
+
+  if (spice === 5) {
+    return `You are ${voice}, roleplaying LIVE erotic roleplay (ERP) with the reader, right in the middle of it. Consensual adult fun between adults.
+Persona / voice: You speak as ${voice}. First person ("I"), PRESENT TENSE, as it is happening. You address the reader as "you".
+The reader: the person you are with is a ${userGender}. Flatter them for what is happening RIGHT NOW — what you are touching, seeing, tasting, hearing from them in this exact moment.
+Style: ${vibe}. Hungry, breathless, reactive. Erotic worship, never demeaning.
+Mode: IN-THE-MOMENT ERP. Stay inside the scene the whole time. No setup, no "earlier tonight", no narration from outside the moment. Describe sensory detail (touch, sight, taste, sound, pressure, heat) and react out loud to what THEY are doing to YOU: how they feel inside/against your hands, mouth, body; how good they taste; the sounds they pull out of you; what their touch is doing to you.
+Rules, always:
+- ${sentenceWord}. Count your sentences. Never write more or fewer.
+- First person, PRESENT TENSE only ("I feel you...", "you taste...", "you're making me..."). Never past-tense storytelling.
+- Address "you" directly the whole time. Flattery = what you touch/see/taste right now + how they are making you feel.
+- Pack it with lewd sensory detail and erotic flattery. Double entendre where it fits, but stay physical and in-scene.
+- Everyone involved is an adult. No minors, no animals. Fully consensual, enthusiastic, playful. No coercion, no non-consent, no humiliation, no bodily fluids talk, nothing degrading.
+- Output ONLY the roleplayed message text. No intro, no quotes around it, no hashtags, no *stage directions*, no (ooc) notes.
+${extraLine}
+${twistLine}TASK: Write one ${vibe} in-the-moment ERP message at spice level 5/5, ${sentenceWord}.`;
+  }
+
+  const spiceBrief = {
+    1: "SLIGHTLY SUGGESTIVE: playful teasing with double meanings. Nothing graphic; someone overhearing could miss it.",
+    2: "FLIRTY INNUENDO: cheeky, suggestive, clearly turned on. Heavy innuendo and erotic flattery, but no graphic anatomy or sex acts.",
+    3: "SPICY AND LEWD: bold erotic flattery, hungry hands-on language, explicit suggestion of what you want to do to them. Graphic but still tasteful.",
+    4: "X-RATED BEDROOM TALK: raw, filthy, explicit consensual dirty-talk. Name body parts and acts bluntly. No euphemisms, no holding back.",
+  }[spice];
+
+  return `You are a charming, silver-tongued flirt writing a short dirty message DIRECTLY TO the reader. It is consensual adult fun between adults.
+Persona / voice: You speak as ${voice}. Write in first person ("I") addressing the reader as "you".
+The reader: the person being flattered and teased is a ${userGender}. Flatter THEIR body and desirability in a way that fits, with double entendre and innuendo.
+Style: ${vibe}. Cocky, desiring, never crude-for-shock, never demeaning. Erotic worship, not insult.
+Spice level: ${spiceBrief}
+Rules, always:
+- ${sentenceWord}. Count your sentences. Never write more or fewer.
+- Address "you" directly the whole time. Second person.
+- Pack it with double entendre, innuendo, lewd teasing and erotic flattery.
+- Everyone involved is an adult. No minors, no animals. Fully consensual, enthusiastic, playful. No coercion, no non-consent, no humiliation, no bodily fluids talk, nothing degrading.
+- Output ONLY the message text. No intro, no quotes around it, no hashtags, no stage directions.
+${extraLine}
+${twistLine}TASK: Write one ${vibe} message at spice level ${spice}/5, ${sentenceWord}.`;
+}
+
+async function generateMessage() {
+  if (!isUnlocked()) {
+    statusEl.textContent = "🔞 Please confirm you are 18+ first.";
+    return;
+  }
+  if (generating && currentGen && currentGen.stop) { try { currentGen.stop(); } catch(e) {} }
+  if (extAbort) { try { extAbort.abort(); } catch(e) {} extAbort = null; }
+  const instruction = buildInstruction();
+  const spice = Number(spiceRange.value);
+  const prov = providerConfig();
+  const external = prov.id !== "perchance";
+
+  generating = true;
+  generateBtn.disabled = true;
+  surpriseBtn.disabled = true;
+  stopBtn.hidden = false;
+  copyBtn.hidden = true;
+  againBtn.hidden = true;
+  msgEl.classList.add("cursor");
+  msgEl.textContent = "";
+  const whisperWord = spice >= 5 ? "unspeakable" : spice === 4 ? "filthy" : spice === 3 ? "spicy" : spice === 2 ? "flirty" : "sweet";
+  const viaNote = external ? ` via ${prov.model || "your model"}` : "";
+  statusEl.innerHTML = `<span class="dots">Whispering something ${whisperWord} in your ear${escapeHtml(viaNote)}</span>`;
+
+  try {
+    if (external) {
+      if (!prov.key) throw new Error("no API key — open the AI provider box and paste your key first (OpenRouter keys: https://openrouter.ai/keys)");
+      if (!prov.model) throw new Error("no model — open the AI provider box and type a model slug first (e.g. anthropic/claude-opus-5.5, full list: https://openrouter.ai/models)");
+      providerBox.open = false;
+      const ctrl = new AbortController();
+      extAbort = ctrl;
+      const text = await streamChatCompletion({
+        base: prov.base, key: prov.key, model: prov.model, instruction,
+        signal: ctrl.signal, isOpenRouter: prov.id === "openrouter",
+        onText: (full) => { msgEl.textContent = full.trimStart(); },
+      });
+      msgEl.textContent = String(text).trim().replace(/^["“”]+|["“”]+$/g, "");
+      if (!msgEl.textContent) throw new Error("empty response");
+      copyBtn.hidden = false;
+      againBtn.hidden = false;
+      statusEl.textContent = "";
+    } else {
+    currentGen = root.generateText({
+      instruction,
+      onChunk: (d) => { msgEl.textContent = d.fullTextSoFar.trimStart(); },
+    });
+    const result = await currentGen;
+    msgEl.textContent = String(result).trim().replace(/^["“”]+|["“”]+$/g, "");
+    if (!msgEl.textContent) throw new Error("empty response");
+    copyBtn.hidden = false;
+    againBtn.hidden = false;
+    statusEl.textContent = "";
+    }
+  } catch (err) {
+    if (err && (err.name === "AbortError" || /aborted/i.test(String(err.message || "")))) {
+      statusEl.textContent = "Stopped.";
+      msgEl.classList.remove("cursor");
+      generating = false;
+      if (isUnlocked()) { generateBtn.disabled = false; surpriseBtn.disabled = false; }
+      stopBtn.hidden = true;
+      return;
+    }
+    console.warn("AI message failed:", err);
+    statusEl.textContent = external ? `❌ ${err.message || err}` : "AI hiccup — try again in a moment.";
+    msgEl.classList.remove("cursor");
+    generating = false;
+    if (isUnlocked()) { generateBtn.disabled = false; surpriseBtn.disabled = false; }
+    stopBtn.hidden = true;
+    extAbort = null;
+    return;
+  }
+  generating = false;
+  if (isUnlocked()) { generateBtn.disabled = false; surpriseBtn.disabled = false; }
+  stopBtn.hidden = true;
+  extAbort = null;
+  msgEl.classList.remove("cursor");
+}
+
+function stopGen() {
+  try { if (currentGen && currentGen.stop) currentGen.stop(); } catch(e) {}
+  if (extAbort) { try { extAbort.abort(); } catch(e) {} extAbort = null; }
+  generating = false;
+  if (isUnlocked()) { generateBtn.disabled = false; surpriseBtn.disabled = false; }
+  stopBtn.hidden = true;
+  msgEl.classList.remove("cursor");
+  if (!msgEl.textContent.trim()) { msgEl.textContent = ""; statusEl.textContent = "Stopped."; }
+}
+
+function surpriseMe() {
+  if (!isUnlocked()) { statusEl.textContent = "🔞 Please confirm you are 18+ first."; return; }
+  const voices = [...genGenderSelect.options];
+  genGenderSelect.selectedIndex = Math.floor(Math.random() * voices.length);
+  const vibes = [...vibeSelect.options].map(o => o.value).filter(v => v && v !== "random");
+  vibeSelect.value = vibes[Math.floor(Math.random() * vibes.length)];
+  spiceRange.value = String(1 + Math.floor(Math.random() * 5));
+  spiceRange.dispatchEvent(new Event("input"));
+  lenSelect.value = String(1 + Math.floor(Math.random() * 4));
+  generateMessage();
+}
+
+function copyMsg() {
+  const text = msgEl.innerText;
+  if (!text) return;
+  if (navigator.clipboard) navigator.clipboard.writeText(text);
+  else {
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+  }
+  copyBtn.textContent = "copied! 😘";
+  setTimeout(() => copyBtn.textContent = "copy message", 1200);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// Enter in the text input = generate (only when unlocked)
+extraInput.addEventListener("keydown", (e) => { if (e.key === "Enter") generateMessage(); });
+</script>

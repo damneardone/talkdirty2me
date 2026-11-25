@@ -1,0 +1,19 @@
+// Note: Text that comes after "//" is ignored, which allows
+// you to write notes - like the one you're reading now!
+
+$meta
+  title = TalkDirty2Me
+  description = 18+ adults-only AI erotic roleplay generator. Consensual adult dirty-talk and in-the-moment ERP. Not for minors.
+  tags = 18+, adult, nsfw, erotic, roleplay
+
+generateText = {import:ai-text-plugin}
+
+title
+  TalkDirty2Me
+
+// Decency levels: 1 = slightly suggestive, 5 = in-the-moment ERP roleplay
+decencyLabel1 = Playful Tease // slightly suggestive, double meanings, safe to blush at
+decencyLabel2 = Flirty Innuendo // cheeky, suggestive, clearly flirting
+decencyLabel3 = Spicy & Lewd // bold erotic flattery, explicit innuendo
+decencyLabel4 = X-Rated Bedroom // raw consensual bedroom dirty-talk
+decencyLabel5 = In-The-Moment ERP // first-person present-tense roleplay: what I touch/see/taste + how you make me feel
