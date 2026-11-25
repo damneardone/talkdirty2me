@@ -1,6 +1,7 @@
 package com.damneardone.talkdirty2me.ui
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -23,5 +24,11 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun Td2mTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = DarkColors, content = content)
+    // The root Surface sets the app-wide content color (white), so every Text
+    // without an explicit color stays readable on the dark background.
+    MaterialTheme(colorScheme = DarkColors) {
+        Surface(color = DarkColors.background, contentColor = DarkColors.onBackground) {
+            content()
+        }
+    }
 }
