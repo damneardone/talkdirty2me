@@ -48,11 +48,16 @@ object TalkDirtyPrompts {
         sentences: Int,
         extra: String,
         twist: String,
+        bans: List<String> = emptyList(),
     ): String {
         val sentenceWord = if (sentences == 1) "EXACTLY 1 sentence" else "EXACTLY $sentences sentences"
         val extraClean = cleanExtra(extra)
         val extraLine = if (extraClean.isNotEmpty()) "Extra flavor from the reader (weave it in naturally): \"$extraClean\"\n" else ""
         val twistLine = "Variety twist (obey it while keeping every rule above): $twist\n"
+        val bansClean = bans.map { it.trim().lowercase() }.filter { it.isNotEmpty() }
+        val bansLine = if (bansClean.isNotEmpty()) {
+            "- BANNED PHRASES — never write any of these, not even close variants: ${bansClean.joinToString("; ")}\n"
+        } else ""
 
         return if (spice == 5) {
             """You are $voice, roleplaying LIVE erotic roleplay (ERP) with the reader, right in the middle of it. Consensual adult fun between adults.
@@ -66,7 +71,7 @@ Rules, always:
 - Address "you" directly the whole time. Flattery = what you touch/see/taste right now + how they are making you feel.
 - Pack it with lewd sensory detail and erotic flattery. Double entendre where it fits, but stay physical and in-scene.
 - Everyone involved is an adult. No minors, no animals. Fully consensual, enthusiastic, playful. No coercion, no non-consent, no humiliation, no bodily fluids talk, nothing degrading.
-- Output ONLY the roleplayed message text. No intro, no quotes around it, no hashtags, no *stage directions*, no (ooc) notes.
+$bansLine- Output ONLY the roleplayed message text. No intro, no quotes around it, no hashtags, no *stage directions*, no (ooc) notes.
 $extraLine
 ${twistLine}TASK: Write one $vibe in-the-moment ERP message at spice level 5/5, $sentenceWord."""
         } else {
@@ -87,7 +92,7 @@ Rules, always:
 - Address "you" directly the whole time. Second person.
 - Pack it with double entendre, innuendo, lewd teasing and erotic flattery.
 - Everyone involved is an adult. No minors, no animals. Fully consensual, enthusiastic, playful. No coercion, no non-consent, no humiliation, no bodily fluids talk, nothing degrading.
-- Output ONLY the message text. No intro, no quotes around it, no hashtags, no stage directions.
+$bansLine- Output ONLY the message text. No intro, no quotes around it, no hashtags, no stage directions.
 $extraLine
 ${twistLine}TASK: Write one $vibe message at spice level $spice/5, $sentenceWord."""
         }

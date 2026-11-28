@@ -3,9 +3,11 @@ package com.damneardone.talkdirty2me.data
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.damneardone.talkdirty2me.net.TtsCatalog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -27,6 +29,12 @@ object SettingsKeys {
     val MODELS_OPENROUTER = stringSetPreferencesKey("td2m.modelsCache.openrouter")
     val MODELS_OPENAI = stringSetPreferencesKey("td2m.modelsCache.openai")
 
+    // Cloud voice (TTS) settings — same key as chat, but its own model + voice + speed.
+    val TTS_MODEL = stringPreferencesKey("td2m.ttsModel")
+    val TTS_VOICE = stringPreferencesKey("td2m.ttsVoice")
+    val TTS_SPEED = floatPreferencesKey("td2m.ttsSpeed")
+    val READ_ALOUD = booleanPreferencesKey("td2m.readAloud")
+    val BANS = stringPreferencesKey("td2m.bans")
     fun modelsKey(provider: String) = when (provider) {
         "openai" -> MODELS_OPENAI
         else -> MODELS_OPENROUTER
@@ -42,6 +50,11 @@ data class ProviderSettings(
     val favs: List<String> = emptyList(),
     val hidden: List<String> = emptyList(),
     val ageOk: Boolean = false,
+    val ttsModel: String = TtsCatalog.MODEL,
+    val ttsVoice: String = TtsCatalog.VOICE,
+    val ttsSpeed: Float = 1.0f,
+    val readAloud: Boolean = false,
+    val bans: String = "",
     val cachedModels: Map<String, Set<String>> = emptyMap(),
 )
 
@@ -61,6 +74,11 @@ class SettingsRepository(private val context: Context) {
             favs = (p[SettingsKeys.OR_FAVS] ?: emptySet()).toList(),
             hidden = (p[SettingsKeys.OR_HIDDEN] ?: emptySet()).toList(),
             ageOk = p[SettingsKeys.AGE_OK] ?: false,
+            ttsModel = p[SettingsKeys.TTS_MODEL] ?: TtsCatalog.MODEL,
+            ttsVoice = p[SettingsKeys.TTS_VOICE] ?: TtsCatalog.VOICE,
+            ttsSpeed = p[SettingsKeys.TTS_SPEED] ?: 1.0f,
+            readAloud = p[SettingsKeys.READ_ALOUD] ?: false,
+            bans = p[SettingsKeys.BANS] ?: "",
             cachedModels = cachedModels.filterValues { it.isNotEmpty() },
         )
     }
@@ -100,5 +118,21 @@ class SettingsRepository(private val context: Context) {
         context.td2mDataStore.edit {
             it[SettingsKeys.modelsKey(provider)] = models.toHashSet()
         }
+    }
+
+    suspend fun saveTts(model: String, voice: String, speed: Float) {
+        context.td2mDataStore.edit {
+            it[SettingsKeys.TTS_MODEL] = model
+            it[SettingsKeys.TTS_VOICE] = voice
+            it[SettingsKeys.TTS_SPEED] = speed
+        }
+    }
+
+    suspend fun setReadAloud(on: Boolean) {
+        context.td2mDataStore.edit { it[SettingsKeys.READ_ALOUD] = on }
+    }
+
+    suspend fun saveBans(value: String) {
+        context.td2mDataStore.edit { it[SettingsKeys.BANS] = value }
     }
 }

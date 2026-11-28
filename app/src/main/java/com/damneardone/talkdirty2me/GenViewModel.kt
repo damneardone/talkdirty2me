@@ -1,5 +1,6 @@
 package com.damneardone.talkdirty2me
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.damneardone.talkdirty2me.data.ProviderSettings
@@ -7,20 +8,35 @@ import com.damneardone.talkdirty2me.data.SettingsRepository
 import com.damneardone.talkdirty2me.net.ModelCatalog
 import com.damneardone.talkdirty2me.net.ModelsClient
 import com.damneardone.talkdirty2me.net.OpenAiCompatClient
+import com.damneardone.talkdirty2me.net.SpeechClient
 import com.damneardone.talkdirty2me.net.Td2mException
+import com.damneardone.talkdirty2me.net.TtsModelInfo
 import com.damneardone.talkdirty2me.prompt.Choices
 import com.damneardone.talkdirty2me.prompt.TalkDirtyPrompts
+import com.damneardone.talkdirty2me.prompt.TtsPrompts
+import com.damneardone.talkdirty2me.tts.TtsPlayer
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class GenViewModel(private val repo: SettingsRepository) : ViewModel() {
+class GenViewModel(private val repo: SettingsRepository, appContext: Context) : ViewModel() {
 
     private val chat = OpenAiCompatClient()
     private val modelsClient = ModelsClient()
+    private val speechClient = SpeechClient()
+    private val ttsPlayer = TtsPlayer(appContext)
+
+    private val _ttsModels = MutableStateFlow<List<TtsModelInfo>>(emptyList())
+    val ttsModels = _ttsModels.asStateFlow()
+
+    private val _ttsStatus = MutableStateFlow("")
+    val ttsStatus = _ttsStatus.asStateFlow()
+
+    val speaking: StateFlow<Boolean> = ttsPlayer.playing
 
     private val _ageOk = MutableStateFlow(false)
     val ageOk = _ageOk.asStateFlow()
@@ -67,12 +83,43 @@ class GenViewModel(private val repo: SettingsRepository) : ViewModel() {
         viewModelScope.launch { repo.setAgeOk(rememberMe) }
     }
 
-    /** Re-lock: hide everything, stop any in-flight generation, forget the age memory. */
+    /** Re-lock: hide everything, stop any in-flight generation + speech, forget the age memory. */
     fun lockSite() {
         genJob?.cancel()
+        ttsPlayer.stop()
         _message.value = ""
         _status.value = ""
         viewModelScope.launch { repo.setAgeOk(false) }
+    }
+
+    fun saveTts(model: String, voice: String, speed: Float) {
+        viewModelScope.launch { repo.saveTts(model, voice, speed) }
+    }
+
+    fun setReadAloud(on: Boolean) {
+        viewModelScope.launch { repo.setReadAloud(on) }
+    }
+
+    fun saveBans(value: String) {
+        viewModelScope.launch { repo.saveBans(value) }
+    }
+
+    private var modelsLoaded = false
+    private var ttsModelsLoaded = false
+
+    /** First panel open each session pulls the live model lists — no manual refresh button. */
+    fun ensureModels() {
+        if (!modelsLoaded) {
+            modelsLoaded = true
+            refreshModels()
+        }
+    }
+
+    fun ensureTtsModels() {
+        if (!ttsModelsLoaded) {
+            ttsModelsLoaded = true
+            refreshTtsModels()
+        }
     }
 
     fun providerName(id: String): String = when (id) {
@@ -179,6 +226,8 @@ class GenViewModel(private val repo: SettingsRepository) : ViewModel() {
         }
         val (idx, twist) = TalkDirtyPrompts.pickTwist(rng, lastTwistIdx)
         lastTwistIdx = idx
+        // 🚫 user's banned phrases — injected into the prompt as a hard rule.
+        val bans = s.bans.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }
         val instruction = TalkDirtyPrompts.buildInstruction(
             userGender = userGender.value,
             voice = voice.value,
@@ -187,6 +236,7 @@ class GenViewModel(private val repo: SettingsRepository) : ViewModel() {
             sentences = sentences,
             extra = extra.value,
             twist = twist,
+            bans = bans,
         )
         val whisperWord = when {
             spiceLevel >= 5 -> "unspeakable"
@@ -212,7 +262,13 @@ class GenViewModel(private val repo: SettingsRepository) : ViewModel() {
                 val cleaned = text.trim().replace(Regex("^[\"“”]+|[\"“”]+$"), "")
                 if (cleaned.isEmpty()) throw Td2mException("empty response")
                 _message.value = cleaned
-                _status.value = ""
+                val slipped = bans.firstOrNull { cleaned.contains(it, ignoreCase = true) }
+                _status.value = if (slipped != null) {
+                    "⚠ banned phrase slipped in (\"$slipped\") — ↻ more like this for a reroll"
+                } else {
+                    ""
+                }
+                if (s.readAloud) speak(cleaned)
             } catch (e: CancellationException) {
                 _status.value = "Stopped."
                 throw e
@@ -235,5 +291,75 @@ class GenViewModel(private val repo: SettingsRepository) : ViewModel() {
         spice.value = 1 + rng.nextInt(5)
         lengthChoice.value = (1 + rng.nextInt(4)).toString()
         generate()
+    }
+
+    fun refreshTtsModels() {
+        val s = _settings.value
+        viewModelScope.launch {
+            _ttsStatus.value = "Fetching voice models…"
+            try {
+                _ttsModels.value = speechClient.fetchModels(resolvedBase(s), s.apiKey)
+                _ttsStatus.value = "✅ ${_ttsModels.value.size} voice models loaded."
+            } catch (e: Exception) {
+                _ttsStatus.value = "❌ ${e.message ?: e.toString()}"
+            }
+        }
+    }
+
+    fun ttsModelInfo(s: ProviderSettings = _settings.value): TtsModelInfo? =
+        _ttsModels.value.firstOrNull { it.id == s.ttsModel }
+
+    /** Synthesizes [text] with the cloud voice and plays it out loud. */
+    fun speak(text: String = _message.value) {
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return
+        val s = _settings.value
+        if (s.apiKey.isEmpty()) {
+            _ttsStatus.value = "❌ add your API key in the 🔌 provider box first"
+            return
+        }
+        val info = ttsModelInfo(s)
+        val format = when {
+            info?.formats?.contains("mp3") == true -> "mp3"
+            info?.formats?.contains("wav") == true -> "wav"
+            info?.formats?.isNotEmpty() == true -> info.formats.first()
+            else -> "mp3"
+        }
+        // 🎭 delivery directions — only for models that support `instructions`,
+        // steered automatically by the current vibe + spice picks.
+        val instructions = info?.takeIf { it.supportsInstructions }
+            ?.let { TtsPrompts.delivery(vibeChoice.value, spice.value) }
+        val speed = info?.let { i ->
+            val min = i.speedMin
+            val max = i.speedMax
+            if (min != null && max != null) s.ttsSpeed.toDouble().coerceIn(min, max) else null
+        }
+        viewModelScope.launch {
+            try {
+                _ttsStatus.value = "🔊 Voicing it…"
+                val audio = speechClient.createSpeech(
+                    base = resolvedBase(s),
+                    key = s.apiKey,
+                    model = s.ttsModel,
+                    input = trimmed,
+                    voice = s.ttsVoice,
+                    responseFormat = format,
+                    speed = speed,
+                    instructions = instructions,
+                )
+                ttsPlayer.play(audio)
+                _ttsStatus.value = ""
+            } catch (e: CancellationException) {
+                _ttsStatus.value = ""
+                throw e
+            } catch (e: Exception) {
+                _ttsStatus.value = "❌ ${e.message ?: e.toString()}"
+            }
+        }
+    }
+
+    fun stopSpeaking() {
+        ttsPlayer.stop()
+        _ttsStatus.value = ""
     }
 }

@@ -19,17 +19,34 @@ The app talks to **OpenRouter by default** (BYOK — bring your own key):
 
 1. Open the 🔌 *AI provider* box in the app.
 2. Paste your OpenRouter key (create one at <https://openrouter.ai/keys>).
-3. Pick a model (↻ fetches the live list; ★ favorites are curated).
-
+3. Pick a model (the live list loads automatically when you open the panel; ★ favorites are curated).
 Your key is stored only in the app's private on-device storage and is sent
 only to the provider you configure — never committed anywhere.
 
 A generic **OpenAI-compatible server** option (base URL + key + model) is
 also built in — that's the path for local backends (e.g. LM Studio) later.
 
+## 🚫 Banned phrases
+
+Tired of seeing the same words in every generation ("every inch of", anyone?)?
+Type them into the *Banned phrases* box on the main screen — they're injected into
+every prompt as a hard rule ("never write these, not even close variants") and,
+if a model still sneaks one past, the status line flags it so you can reroll.
+
+## Voice (TTS)
+
+The 🔊 *Voice* box reads messages out loud:
+
+1. **OpenRouter cloud voices** — same key as chat: pick a voice model, then a voice
+   and a speed (the voice list loads automatically). Each message costs a little OpenRouter credit.
+2. **🎭 Auto-tagged delivery** — on voice models that accept `instructions`
+   (e.g. Seed-TTS, Gemini TTS), your vibe + spice picks steer *how* the line is read.
+3. Offline on-device voices are on the roadmap below.
+
 ## Roadmap
 
-- [ ] Built-in TTS — on-device, NekoSpeak-style ONNX engines (Piper / Kokoro / KittenTTS / Pocket-Tts)
+- [x] Cloud TTS — OpenRouter `/audio/speech` (same key as chat, per-model voices + speed + delivery `instructions`)
+- [ ] Built-in TTS — on-device, NekoSpeak-style ONNX engines (Piper / Kokoro / KittenTTS / Pocket-tts)
 - [ ] Image generation via AI Horde
 
 ## Development

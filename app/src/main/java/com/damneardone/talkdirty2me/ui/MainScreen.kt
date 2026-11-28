@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -92,6 +93,7 @@ private fun BlinkingCursor() {
 fun MainScreen(vm: GenViewModel) {
     val message by vm.message.collectAsState()
     val status by vm.status.collectAsState()
+    val settings by vm.settings.collectAsState()
     val generating by vm.generating.collectAsState()
     val userGender by vm.userGender.collectAsState()
     val voice by vm.voice.collectAsState()
@@ -99,6 +101,8 @@ fun MainScreen(vm: GenViewModel) {
     val spiceLevel by vm.spice.collectAsState()
     val lengthChoice by vm.lengthChoice.collectAsState()
     val extra by vm.extra.collectAsState()
+    val speaking by vm.speaking.collectAsState()
+    val ttsStatus by vm.ttsStatus.collectAsState()
 
     val clipboard = LocalClipboardManager.current
     var copied by remember { mutableStateOf(false) }
@@ -179,19 +183,38 @@ fun MainScreen(vm: GenViewModel) {
                     placeholder = { Text("e.g. good-morning text, after a long day, mention my tattoos…") },
                     modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
                 )
+
+                OutlinedTextField(
+                    value = settings.bans,
+                    onValueChange = { vm.saveBans(it) },
+                    label = { Text("🚫 Banned phrases (optional, comma-separated)") },
+                    placeholder = { Text("e.g. every inch of, porcelain, isn't shy") },
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                )
             }
         }
-
+        val ready = settings.apiKey.isNotEmpty()
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 12.dp)) {
-            Button(onClick = vm::generate, enabled = !generating) { Text("🔥 Talk dirty to me") }
+            Button(onClick = vm::generate, enabled = ready && !generating) { Text("🔥 Talk dirty to me") }
             if (generating) {
                 OutlinedButton(onClick = vm::stopGen) { Text("stop") }
             }
-            OutlinedButton(onClick = vm::surpriseMe, enabled = !generating) { Text("🎲 surprise me") }
+            OutlinedButton(onClick = vm::surpriseMe, enabled = ready && !generating) { Text("🎲 surprise me") }
+        }
+        if (!ready) {
+            Text(
+                "🔌 set up your API key in the AI provider panel below first — it takes about a minute.",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp),
+            )
         }
 
         if (status.isNotEmpty()) {
             Text(status, modifier = Modifier.padding(vertical = 8.dp))
+        }
+        if (ttsStatus.isNotEmpty()) {
+            Text(ttsStatus, style = MaterialTheme.typography.bodySmall)
         }
 
         if (message.isNotEmpty() || generating) {
@@ -207,12 +230,17 @@ fun MainScreen(vm: GenViewModel) {
                 }
             }
             if (message.isNotEmpty() && !generating) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(onClick = {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = {
                         clipboard.setText(AnnotatedString(message))
                         copied = true
                     }) { Text(if (copied) "copied! 😘" else "copy message") }
-                    TextButton(onClick = vm::generate) { Text("↻ more like this") }
+                    if (!speaking) {
+                        Button(onClick = { vm.speak(message) }, enabled = ready) { Text("🔊 read it to me") }
+                    } else {
+                        OutlinedButton(onClick = vm::stopSpeaking) { Text("⏹ hush") }
+                    }
+                    OutlinedButton(onClick = vm::generate, enabled = ready) { Text("↻ more like this") }
                 }
             }
         }

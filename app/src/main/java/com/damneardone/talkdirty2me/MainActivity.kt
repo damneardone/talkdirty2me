@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Td2mTheme {
                 val repo = remember { SettingsRepository(applicationContext) }
-                val vm: GenViewModel = viewModel(factory = viewModelFactory { initializer { GenViewModel(repo) } })
+                val vm: GenViewModel = viewModel(factory = viewModelFactory { initializer { GenViewModel(repo, applicationContext) } })
                 val ageOk by vm.ageOk.collectAsState()
                 if (!ageOk) {
                     AgeGate(onConfirm = { rememberMe -> vm.confirmAge(rememberMe) })

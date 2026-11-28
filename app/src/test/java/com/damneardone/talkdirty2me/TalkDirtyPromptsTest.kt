@@ -99,4 +99,44 @@ class TalkDirtyPromptsTest {
             last = idx
         }
     }
+
+    @Test
+    fun bannedPhrasesInjectedIntoEverySpiceLevel() {
+        for (spice in 1..5) {
+            val p = TalkDirtyPrompts.buildInstruction(
+                userGender = "woman",
+                voice = "a sultry woman",
+                vibe = "cheeky and playful",
+                spice = spice,
+                sentences = 2,
+                extra = "",
+                twist = "Whisper it like a secret.",
+                bans = listOf("every inch of"),
+            )
+            assertTrue("spice $spice missing ban line", p.contains("BANNED PHRASES — never write any of these, not even close variants: every inch of"))
+        }
+    }
+
+    @Test
+    fun bansWhitespaceEntriesDroppedMixedCaseKept() {
+        val p = TalkDirtyPrompts.buildInstruction(
+            "woman", "a sultry woman", "cheeky and playful", 2, 2, "",
+            "Whisper it like a secret.", bans = listOf("  ", "ISN'T SHY"),
+        )
+        // banned phrases are lowercased into the prompt; matching stays case-insensitive
+        assertTrue(p.contains("isn't shy"))
+        assertFalse(p.contains(";  ") || p.contains("; ;"))
+    }
+
+    @Test
+    fun noBansLeavesNoTrace() {
+        for (spice in 1..5) {
+            val p = TalkDirtyPrompts.buildInstruction(
+                "woman", "a sultry woman", "cheeky and playful", spice, 2, "",
+                "Whisper it like a secret.",
+            )
+            assertFalse("spice $spice leaked ban text", p.contains("BANNED PHRASES"))
+            assertFalse(p.contains("never write any of these"))
+        }
+    }
 }
